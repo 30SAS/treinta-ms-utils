@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='treinta_ms_utils',
-    version='0.0.1',  # Incremento de la versión
+    version='1.0.0',  # Incremento de la versión
     author='cristian.pinela',
     author_email='cristian.pinela@treinta.co',
     packages=find_packages(),
@@ -13,5 +13,6 @@ setup(
     install_requires=[
         'boto3',
         'botocore',
+        'pytz'
     ]
 )

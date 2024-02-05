@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: treinta-ms-utils
-Version: 0.0.1
+Version: 1.0.0
 Summary: paquete que permite a los microservicios interaccionar con otros MS
 Author: cristian.pinela
 Author-email: cristian.pinela@treinta.co
@@ -9,10 +9,11 @@ Description-Content-Type: text/markdown
 License-File: LICENSE
 Requires-Dist: boto3
 Requires-Dist: botocore
+Requires-Dist: pytz
 
 # treinta_ms_utils
 
-`treinta_ms_utils` es una librería de Python desarrollada para simplificar y optimizar la interacción con diversos microservicios, facilitando la implementación de operaciones comunes como la creación, actualización y eliminación de registros de logs. Está dirigida a ingenieros de software, desarrolladores de backend y profesionales de TI que trabajan en la construcción y mantenimiento de arquitecturas basadas en microservicios.
+`treinta_ms_utils` es una librería de Python desarrollada para simplificar y optimizar la interacción con diversos microservicios, facilitando la implementación de operaciones comunes como la creación, actualización, lectura y eliminación de registros de logs. Está dirigida a ingenieros de software, desarrolladores de backend y profesionales de TI que trabajan en la construcción y mantenimiento de arquitecturas basadas en microservicios.
 
 ## Índice
 
@@ -23,6 +24,7 @@ Requires-Dist: botocore
   - [1. `create_log`](#1-create_log)
   - [2. `update_log`](#2-update_log)
   - [3. `delete_log`](#3-delete_log)
+  - [4. `read_log`](#4-read_log)  <!-- Nueva función añadida -->
 - [Manejo de Errores](#manejo-de-errores)
 - [Licencia](#licencia)
 - [Contacto](#contacto)
@@ -33,8 +35,9 @@ La librería `treinta_ms_utils` proporciona un conjunto de herramientas y utilid
 
 ## Ventajas Clave
 
-- **Simplificación de Tareas Comunes**: Automatiza y simplifica tareas repetitivas como la inserción de logs, actualización y eliminación de registros en DynamoDB.
+- **Simplificación de Tareas Comunes**: Automatiza y simplifica tareas repetitivas como la inserción, actualización, lectura y eliminación de logs en DynamoDB.
 - **Generación Automática de Tokens**: Facilita la generación de tokens únicos para cada registro, asegurando la trazabilidad y unicidad de los logs.
+- **Manejo Preciso de la Zona Horaria**: Garantiza que todos los registros de logs se manejen en la zona horaria de Colombia (UTC-5), tanto para `created_timestamp` como para `updated_timestamp`.
 - **Integración con DynamoDB**: Diseñada para trabajar de manera óptima con Amazon DynamoDB, aprovechando sus capacidades de almacenamiento NoSQL para gestionar logs de manera eficiente.
 - **Manejo de Errores**: Incorpora prácticas de manejo de errores para asegurar la robustez y fiabilidad de las operaciones de microservicios.
 
@@ -52,46 +55,27 @@ Este comando instala la última versión de la librería en tu entorno Python, p
 
 ### 1. `create_log`
 
-Crea y almacena un nuevo registro de log en la tabla especificada de DynamoDB.
-
-**Ejemplo:**
-
-```python
-from treinta_ms_utils import create_log
-
-token = create_log(service_name="AuthService",
-                   endpoint="/api/auth/login",
-                   response={"status": "success"},
-                   status_code=200,
-                   table_name="ServiceLogs")
-```
+Crea y almacena un nuevo registro de log en la tabla especificada de DynamoDB, incluyendo `created_timestamp` y `updated_timestamp` basados en la hora de Colombia.
 
 ### 2. `update_log`
 
-Actualiza un registro existente de log en DynamoDB, identificado por su token único y timestamp.
-
-**Ejemplo:**
-
-```python
-from treinta_ms_utils import update_log
-
-update_log(token="unique-token",
-           timestamp="2023-01-01T12:00:00Z",
-           response={"status": "error", "error": "Invalid credentials"},
-           status_code=401,
-           table_name="ServiceLogs")
-```
+Actualiza un registro existente de log en DynamoDB, identificado por su token único, incluyendo la actualización del `updated_timestamp` a la hora actual de Colombia.
 
 ### 3. `delete_log`
 
 Elimina un registro de log de la tabla especificada en DynamoDB, utilizando su token único y timestamp como identificadores.
 
+### 4. `read_log`
+
+Recupera los detalles de un registro específico de log basado en su token, incluyendo `created_timestamp` y `updated_timestamp`, mostrando la información en la zona horaria de Colombia.
+
 **Ejemplo:**
 
 ```python
-from treinta_ms_utils import delete_log
+from treinta_ms_utils import read_log
 
-delete_log(token="unique-token", timestamp="2023-01-01T12:00:00Z", table_name="ServiceLogs")
+log_details = read_log(token="unique-token", table_name="ServiceLogs")
+print(log_details)
 ```
 
 ## Manejo de Errores
