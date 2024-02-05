@@ -1,3 +1,15 @@
+Metadata-Version: 2.1
+Name: treinta-ms-utils
+Version: 0.0.1
+Summary: paquete que permite a los microservicios interaccionar con otros MS
+Author: cristian.pinela
+Author-email: cristian.pinela@treinta.co
+License: LICENSE
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: boto3
+Requires-Dist: botocore
+
 # treinta_ms_utils
 
 `treinta_ms_utils` es una librería de Python desarrollada para simplificar y optimizar la interacción con diversos microservicios, facilitando la implementación de operaciones comunes como la creación, actualización y eliminación de registros de logs. Está dirigida a ingenieros de software, desarrolladores de backend y profesionales de TI que trabajan en la construcción y mantenimiento de arquitecturas basadas en microservicios.
