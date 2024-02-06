@@ -5,7 +5,7 @@ import pytz
 from botocore.exceptions import ClientError
 
 # Configuración del cliente DynamoDB
-dynamodb = boto3.resource('dynamodb')
+dynamodb = boto3.resource('dynamodb',region_name='us-west-2')
 colombia_tz = pytz.timezone('America/Bogota')
 
 def current_time_colombia():
