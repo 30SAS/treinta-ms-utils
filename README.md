@@ -56,6 +56,40 @@ Elimina un registro de log de la tabla especificada en DynamoDB, utilizando su t
 
 Recupera los detalles de un registro específico de log basado en su token, incluyendo `created_timestamp` y `updated_timestamp`, mostrando la información en la zona horaria de Colombia.
 
+### 5. `publish_message_sns`
+
+Publica un mensaje en un tema (topic) de Amazon SNS, envía un SMS directamente a un número de teléfono o un mensaje a un endpoint móvil, facilitando la comunicación asincrónica entre microservicios o la notificación directa a usuarios finales.
+
+**Parámetros:**
+
+- `topic_arn` (opcional): ARN del tema al que quieres publicar.
+- `target_arn` (opcional): ARN del endpoint móvil al que quieres enviar el mensaje.
+- `phone_number` (opcional): Número de teléfono al cual quieres enviar un SMS, en formato E.164.
+- `message`: Contenido del mensaje a enviar.
+- `subject` (opcional): Asunto del mensaje, utilizado principalmente para notificaciones por correo electrónico.
+- `message_structure` (opcional): Define si el mensaje debe ser enviado como un string JSON para soportar formatos de mensaje específicos por protocolo.
+- `message_attributes` (opcional): Atributos del mensaje para filtrar o manejar el mensaje de manera diferenciada por los suscriptores.
+- `message_deduplication_id` (opcional, solo para temas FIFO): Identificador para la deduplicación de mensajes.
+- `message_group_id` (opcional, solo para temas FIFO): Identificador del grupo de mensajes para asegurar la entrega en orden dentro del mismo grupo.
+
+**Retorna:**
+
+- ID del mensaje publicado.
+
+**Ejemplo:**
+
+```python
+from treinta_ms_utils import publish_message_sns
+
+# Publicar un mensaje simple a un tema de SNS
+message_id = publish_message_sns(
+    topic_arn="arn:aws:sns:us-west-2:123456789012:mi-tema",
+    message="Mensaje importante",
+    subject="Asunto del mensaje"
+)
+print(f"Mensaje publicado con éxito. ID: {message_id}")
+```
+
 **Ejemplo:**
 
 ```python
@@ -76,3 +110,5 @@ print(log_details)
 ## Contacto
 
 Para soporte, colaboraciones o preguntas, no dudes en contactarnos a través de nuestro [repositorio de GitHub](#).
+
+
