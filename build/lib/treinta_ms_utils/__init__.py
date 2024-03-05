@@ -4,5 +4,5 @@ from .core import (
     update_log,
     delete_log,
     get_log,
-    publish_sns
+    publish_message_sns
 )

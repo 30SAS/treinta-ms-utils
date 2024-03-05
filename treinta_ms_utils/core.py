@@ -7,7 +7,44 @@ from botocore.exceptions import ClientError
 # Configuración del cliente DynamoDB
 dynamodb = boto3.resource('dynamodb',region_name='us-west-2')
 colombia_tz = pytz.timezone('America/Bogota')
+sns_client = boto3.client('sns', region_name='us-west-2')
 
+
+def publish_message_sns(topic_arn=None, target_arn=None, phone_number=None, message='', subject=None, message_structure=None, message_attributes=None, message_deduplication_id=None, message_group_id=None):
+    """
+    Publica un mensaje en un topic de SNS, envía un SMS o un mensaje a un endpoint móvil.
+
+    :param topic_arn: ARN del topic al que se quiere publicar.
+    :param target_arn: ARN del endpoint móvil al que se quiere enviar el mensaje.
+    :param phone_number: Número de teléfono al que enviar un SMS.
+    :param message: Mensaje a enviar.
+    :param subject: Asunto del mensaje (solo para endpoints de email).
+    :param message_structure: Estructura del mensaje ('json' si se envían mensajes diferentes por protocolo).
+    :param message_attributes: Atributos del mensaje.
+    :param message_deduplication_id: ID de deduplicación del mensaje (solo para topics FIFO).
+    :param message_group_id: ID del grupo de mensajes (solo para topics FIFO).
+    :return: ID del mensaje publicado.
+    """
+    # Cliente de SNS
+    
+    try:
+        response = sns_client.publish(
+            TopicArn=topic_arn,
+            TargetArn=target_arn,
+            PhoneNumber=phone_number,
+            Message=message,
+            Subject=subject,
+            MessageStructure=message_structure,
+            MessageAttributes=message_attributes or {},
+            MessageDeduplicationId=message_deduplication_id,
+            MessageGroupId=message_group_id
+        )
+        print(f"Mensaje publicado con éxito. ID: {response['MessageId']}")
+        return response['MessageId']
+    except ClientError as e:
+        print(f"Error al publicar el mensaje: {e}")
+        return None
+    
 def current_time_colombia():
     """
     Retorna el timestamp actual en la zona horaria de Colombia.
