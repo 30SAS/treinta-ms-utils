@@ -92,7 +92,7 @@ def current_time_colombia():
     """
     return datetime.now(colombia_tz).isoformat()
 
-def create_log(service_name, endpoint, response, status_code, BIL, PATH, table_name='ServiceLogs'):
+def create_log(service_name, endpoint, response, status_code, table_name='ServiceLogs'):
     """
     Modificaciones:
     1. Usa la zona horaria de Colombia para el timestamp.
@@ -114,16 +114,14 @@ def create_log(service_name, endpoint, response, status_code, BIL, PATH, table_n
                 'statusCode': status_code
             }
         )
-        log_with_datadog(logging.INFO, f"Log creado con éxito. Token: {token}", BIL, PATH)
+        print(f"Log creado con éxito. Token: {token}")
         return token
     except ClientError as e:
-        log_with_datadog(logging.ERROR, f"Error al insertar el log en {table_name}: {e}", BIL, PATH)
+        print(f"Error al insertar el log en {table_name}: {e}")
         return None
-
-def update_log(token, response, status_code, BIL, PATH, table_name='ServiceLogs'):
+def update_log(token, response, status_code, table_name='ServiceLogs'):
     """
     Actualiza un registro existente en la tabla especificada de DynamoDB.
-
     Nota: La función ahora solo requiere token, response, y status_code.
           El timestamp de actualización se genera automáticamente.
     """
@@ -138,13 +136,12 @@ def update_log(token, response, status_code, BIL, PATH, table_name='ServiceLogs'
             ExpressionAttributeValues={':resp': response, ':status': status_code, ':updated': timestamp},
             ReturnValues="UPDATED_NEW"
         )
-        log_with_datadog(logging.INFO, "Log actualizado con éxito.", BIL, PATH)
+        print("Log actualizado con éxito.")
         return response
     except ClientError as e:
-        log_with_datadog(logging.ERROR, f"Error al actualizar el log: {e}", BIL, PATH)
+        print(f"Error al actualizar el log: {e}")
         return None
-
-def delete_log(token, BIL, PATH, table_name='ServiceLogs'):
+def delete_log(token, table_name='ServiceLogs'):
     """
     Elimina un registro de log de la tabla especificada en DynamoDB.
     """
@@ -152,13 +149,12 @@ def delete_log(token, BIL, PATH, table_name='ServiceLogs'):
     
     try:
         response = table.delete_item(Key={'requestToken': token})
-        log_with_datadog(logging.INFO, "Log eliminado con éxito.", BIL, PATH)
+        print("Log eliminado con éxito.")
         return response
     except ClientError as e:
-        log_with_datadog(logging.ERROR, f"Error al eliminar el log: {e}", BIL, PATH)
+        print(f"Error al eliminar el log: {e}")
         return None
-
-def get_log(token, BIL, PATH, table_name='ServiceLogs'):
+def get_log(token, table_name='ServiceLogs'):
     """
     Recupera un registro de log específico de DynamoDB usando su token.
     """
@@ -169,7 +165,6 @@ def get_log(token, BIL, PATH, table_name='ServiceLogs'):
         if 'Item' in response:
             item = response['Item']
             # No es necesario ajustar la zona horaria, ya que se almacena como está.
-            log_with_datadog(logging.INFO, "Log recuperado con éxito.", BIL, PATH)
             return {
                 'token': item.get('requestToken'),
                 'serviceName': item.get('serviceName'),
@@ -180,8 +175,8 @@ def get_log(token, BIL, PATH, table_name='ServiceLogs'):
                 'updated_timestamp': item.get('updated_timestamp')
             }
         else:
-            log_with_datadog(logging.WARNING, "Log no encontrado.", BIL, PATH)
+            print("Log no encontrado.")
             return None
     except ClientError as e:
-        log_with_datadog(logging.ERROR, f"Error al leer el log: {e}", BIL, PATH)
+        print(f"Error al leer el log: {e}")
         return None

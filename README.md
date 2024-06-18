@@ -11,7 +11,10 @@
   - [1. `create_log`](#1-create_log)
   - [2. `update_log`](#2-update_log)
   - [3. `delete_log`](#3-delete_log)
-  - [4. `read_log`](#4-read_log)  <!-- Nueva función añadida -->
+  - [4. `read_log`](#4-read_log)
+  - [5. `publish_message_sns`](#5-publish_message_sns)
+  - [6. `configure_datadog`](#6-configure_datadog)
+  - [7. `log_with_datadog`](#7-log_with_datadog)
 - [Manejo de Errores](#manejo-de-errores)
 - [Licencia](#licencia)
 - [Contacto](#contacto)
@@ -27,6 +30,7 @@ La librería `treinta_ms_utils` proporciona un conjunto de herramientas y utilid
 - **Manejo Preciso de la Zona Horaria**: Garantiza que todos los registros de logs se manejen en la zona horaria de Colombia (UTC-5), tanto para `created_timestamp` como para `updated_timestamp`.
 - **Integración con DynamoDB**: Diseñada para trabajar de manera óptima con Amazon DynamoDB, aprovechando sus capacidades de almacenamiento NoSQL para gestionar logs de manera eficiente.
 - **Manejo de Errores**: Incorpora prácticas de manejo de errores para asegurar la robustez y fiabilidad de las operaciones de microservicios.
+- **Integración con Datadog**: Facilita la configuración y el envío de logs a Datadog para el monitoreo y análisis avanzado.
 
 ## Instalación
 
@@ -55,6 +59,15 @@ Elimina un registro de log de la tabla especificada en DynamoDB, utilizando su t
 ### 4. `read_log`
 
 Recupera los detalles de un registro específico de log basado en su token, incluyendo `created_timestamp` y `updated_timestamp`, mostrando la información en la zona horaria de Colombia.
+
+**Ejemplo:**
+
+```python
+from treinta_ms_utils import read_log
+
+log_details = read_log(token="unique-token", table_name="ServiceLogs", BIL="low", PATH="src/routers/metabase_etl/main.py")
+print(log_details)
+```
 
 ### 5. `publish_message_sns`
 
@@ -90,13 +103,37 @@ message_id = publish_message_sns(
 print(f"Mensaje publicado con éxito. ID: {message_id}")
 ```
 
+### 6. `configure_datadog`
+
+Configura el logger de Datadog para enviar logs personalizados a la plataforma de Datadog.
+
 **Ejemplo:**
 
 ```python
-from treinta_ms_utils import read_log
+from treinta_ms_utils import configure_datadog
 
-log_details = read_log(token="unique-token", table_name="ServiceLogs")
-print(log_details)
+logger = configure_datadog()
+```
+
+### 7. `log_with_datadog`
+
+Envía un log personalizado a Datadog con los detalles específicos del evento.
+
+**Parámetros:**
+
+- `level`: Nivel del log (e.g., `logging.INFO`, `logging.ERROR`).
+- `message`: Mensaje del log.
+- `BIL`: Atributo personalizado BIL.
+- `PATH`: Atributo personalizado PATH.
+- `**kwargs`: Cualquier otro atributo adicional que se quiera incluir en el log.
+
+**Ejemplo:**
+
+```python
+from treinta_ms_utils import log_with_datadog
+import logging
+
+log_with_datadog(logging.INFO, "Este es un mensaje de información", BIL="low", PATH="src/routers/metabase_etl/main.py")
 ```
 
 ## Manejo de Errores
@@ -110,5 +147,3 @@ print(log_details)
 ## Contacto
 
 Para soporte, colaboraciones o preguntas, no dudes en contactarnos a través de nuestro [repositorio de GitHub](#).
-
-
