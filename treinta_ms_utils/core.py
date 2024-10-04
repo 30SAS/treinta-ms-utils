@@ -147,7 +147,7 @@ def print_update_log(token, message, status_code):
     """
     Toma un mensaje y lo imprime en la consola, luego actualiza el registro de log en DynamoDB.
     """
-    print(f"Token: {token}, Message: {message}, Status_code: {status_code}")
+    print(f"Message: {message}, Status_code: {status_code}")
     update_log(token, message, status_code)
     
     

@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='treinta_ms_utils',
-    version='1.4.3',  # Incremento de la versión
+    version='1.4.4',  # Incremento de la versión
     author='cristian.pinela',
     author_email='cristian.pinela@treinta.co',
     packages=find_packages(),
