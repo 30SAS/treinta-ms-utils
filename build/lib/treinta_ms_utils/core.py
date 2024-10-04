@@ -119,6 +119,7 @@ def create_log(service_name, endpoint, response, status_code, table_name='Servic
     except ClientError as e:
         print(f"Error al insertar el log en {table_name}: {e}")
         return None
+    
 def update_log(token, response, status_code, table_name='ServiceLogs'):
     """
     Actualiza un registro existente en la tabla especificada de DynamoDB.
@@ -141,6 +142,15 @@ def update_log(token, response, status_code, table_name='ServiceLogs'):
     except ClientError as e:
         print(f"Error al actualizar el log: {e}")
         return None
+    
+def print_update_log(token, message, status_code):
+    """
+    Toma un mensaje y lo imprime en la consola, luego actualiza el registro de log en DynamoDB.
+    """
+    print(f"Token: {token}, Message: {message}, Status_code: {status_code}")
+    update_log(token, message, status_code)
+    
+    
 def delete_log(token, table_name='ServiceLogs'):
     """
     Elimina un registro de log de la tabla especificada en DynamoDB.
@@ -154,6 +164,7 @@ def delete_log(token, table_name='ServiceLogs'):
     except ClientError as e:
         print(f"Error al eliminar el log: {e}")
         return None
+    
 def get_log(token, table_name='ServiceLogs'):
     """
     Recupera un registro de log específico de DynamoDB usando su token.
